@@ -30,10 +30,12 @@ def actions(name = None):
     Returns: Web page of actions or redirects to score board.
     """
     if name in validNames:
+        # Load data
         if request.method == 'POST':
-            action = request.form['sumbit']
-            return redirect(url_for("scoreBoard", action=action, name=name))
-        return render_template("actions.html")
+            action = request.form['submit'] 
+            return redirect(url_for('scoreBoard', action=action, name=name))
+        else:
+            return render_template("actions.html")
     else:
         return "Wrong name"
 
@@ -47,12 +49,14 @@ def scoreBoard(action = None, name = None):
         name: Name of person
     Returns: Web page of score board.
     """
+    print(action in validActions)
     if action in validActions and name in validNames:
-        pass
+        return render_template("scoreboard.html")
+    elif action is None and name is None:
+        return render_template("scoreboard.html") 
     else:
         return "Wrong url"
 
-    return render_template("scoreboard.html") 
 
 
 if __name__ == "__main__":
