@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
 
 
 app = Flask(__name__)
 
 validNames = ["Marius", "Olaug", "Finn", "Sofie", "Ole Kristian"]
-validActions = ["Oppvask inn", "Oppvask ut", "Soeppel", "Toerk overflater"]
+validActions = ["Oppvask inn", "Oppvask ut", u"Søppel", u"Tørk overflater"]
 
 @app.route('/', methods=['GET', 'POST'])
 def namesIndex():
@@ -32,7 +33,8 @@ def actions(name = None):
     if name in validNames:
         # Load data
         if request.method == 'POST':
-            action = request.form['submit'] 
+            action = request.form['submit']
+            print(action)
             return redirect(url_for('scoreBoard', action=action, name=name))
         else:
             return render_template("actions.html")
