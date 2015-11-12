@@ -9,9 +9,23 @@ class DbHelper:
         self.databaseName = ''
         self.username = ''
         self.tableName = ''
+        self.fileName = "credidentials.txt"
 
     def loadCredidentials(self):
-
+        """
+        Loads settings from file.
+        """
+        fileCred = open(self.fileName, "r")
+        for line in fileCred:
+            line = line.strip().split(":")
+            if line[0] == "user":
+                self.username = line[1]
+            elif line[0] == "db":
+                self.databaseName = line[1]
+            elif line[0] == "table":
+                self.tableName = line[1]
+        fileCred.close()
+        
     def loadData(self):
         """
         Reads person info and stores it in a list of Person objects.
@@ -67,6 +81,8 @@ class DbHelper:
 
         con.close()
 
+
+
 class People:
 
     def __init__(self, idTag = 0, name = None, score = 0):
@@ -74,49 +90,50 @@ class People:
         self.score = score
         self.idTag = idTag
 
-con = None
 
-try:
-    con = psycopg2.connect(database='', user='')
-    cur = con.cursor()
-    
-    cur.execute("DROP TABLE IF EXISTS Cars")
-    cur.execute("CREATE TABLE Cars(Id INTEGER PRIMARY KEY, Name TEXT, Price INT)")
-    cur.execute("INSERT INTO Cars VALUES(1, 'Audi', 52642)")
-    cur.execute("INSERT INTO Cars VALUES(2, 'Mercedes', 57127)")
-    cur.execute("INSERT INTO Cars VALUES(3, 'Skoda', 9000)")
-    con.commit()
-    
-    cur.execute("SELECT * FROM Cars")
-    rows = cur.fetchall()
-
-    for row in rows:
-        print row[1]
-
-    #cur.execute("DROP TABLE IF EXISTS Cars")
-    con.commit()
-    cur.execute("CREATE TABLE IF NOT EXISTS Cars(Id INT PRIMARY KEY, Name TEXT, Price INT)")
-    mycar = (4, "2", 3)
-    query = "INSERT INTO Cars (Id, Name, Price) VALUES (%s, %s, %s)" % mycar
-    cur.execute(query)
-    con.commit()
-    cur.execute("SELECT * FROM Cars")
-    rows = cur.fetchall()
-    print rows
-
-    cur.execute("DROP TABLE IF EXISTS Cars")
-    con.commit()
-
-
-except psycopg2.DatabaseError, e:
-    if con:
-        con.rollback()
-
-    print 'Error %s' % e
-    sys.exit(1)
-
-finally:
-    if con:
-        con.close()
-        pass
-
+#con = None
+#
+#try:
+#    con = psycopg2.connect(database='', user='')
+#    cur = con.cursor()
+#    
+#    cur.execute("DROP TABLE IF EXISTS Cars")
+#    cur.execute("CREATE TABLE Cars(Id INTEGER PRIMARY KEY, Name TEXT, Price INT)")
+#    cur.execute("INSERT INTO Cars VALUES(1, 'Audi', 52642)")
+#    cur.execute("INSERT INTO Cars VALUES(2, 'Mercedes', 57127)")
+#    cur.execute("INSERT INTO Cars VALUES(3, 'Skoda', 9000)")
+#    con.commit()
+#    
+#    cur.execute("SELECT * FROM Cars")
+#    rows = cur.fetchall()
+#
+#    for row in rows:
+#        print row[1]
+#
+#    #cur.execute("DROP TABLE IF EXISTS Cars")
+#    con.commit()
+#    cur.execute("CREATE TABLE IF NOT EXISTS Cars(Id INT PRIMARY KEY, Name TEXT, Price INT)")
+#    mycar = (4, "2", 3)
+#    query = "INSERT INTO Cars (Id, Name, Price) VALUES (%s, %s, %s)" % mycar
+#    cur.execute(query)
+#    con.commit()
+#    cur.execute("SELECT * FROM Cars")
+#    rows = cur.fetchall()
+#    print rows
+#
+#    cur.execute("DROP TABLE IF EXISTS Cars")
+#    con.commit()
+#
+#
+#except psycopg2.DatabaseError, e:
+#    if con:
+#        con.rollback()
+#
+#    print 'Error %s' % e
+#    sys.exit(1)
+#
+#finally:
+#    if con:
+#        con.close()
+#        pass
+#
