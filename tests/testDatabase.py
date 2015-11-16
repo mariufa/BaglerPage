@@ -29,6 +29,9 @@ class DatabaseTestCase(unittest.TestCase):
         self.assertEqual(len(dbhelper.databaseName), 0)
         self.assertEqual(len(dbhelper.tableName), 0)
 
+    def test_LoadAndSaveData(self):
+        pass
+
     def test_test(self):
         """
         Test to check test framework.
