@@ -53,7 +53,7 @@ class DatabaseTestCase(unittest.TestCase):
         self.assertEqual(1,1)
 
     def tearDown(self):
-        pass
+        self.dbhelper.resetData()
 
 
 if __name__ == "__main__":
