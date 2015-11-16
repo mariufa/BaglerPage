@@ -30,6 +30,10 @@ class DatabaseTestCase(unittest.TestCase):
         self.assertEqual(len(dbhelper.tableName), 0)
 
     def test_LoadAndSaveData(self):
+        """
+        Test to check loading and saving of data
+        """
+        dbhelper = DbHelper()
         pass
 
     def test_test(self):

@@ -82,6 +82,9 @@ class DbHelper:
 
         con.close()
 
+    def resetData(self):
+        self.saveData(None)
+
 
 
 class People:
