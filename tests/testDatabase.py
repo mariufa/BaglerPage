@@ -1,4 +1,5 @@
 import sys, os
+# Enable import of classes from parent folder
 sys.path.append('..')
 import unittest
 from baglerDbHelper import DbHelper
@@ -9,19 +10,19 @@ class DatabaseTestCase(unittest.TestCase):
         pass
 
 
-    def test_loadCredidentials(self):
+    def test_loadCredentials(self):
         """
-        Test to check loading of credidentials.
+        Test to check loading of credentials.
         """
         dbhelper = DbHelper()
-        dbhelper.loadCredidentials()
+        dbhelper.loadCredentials()
         self.assertGreater(len(dbhelper.username), 0)
         self.assertGreater(len(dbhelper.databaseName), 0)
         self.assertGreater(len(dbhelper.tableName), 0)
 
-    def test_loadCredidentialsNotLoaded(self):
+    def test_loadCredentialsNotLoaded(self):
         """
-        Test to check not loading of credidentials.
+        Test to check not loading of credentials.
         """
         dbhelper = DbHelper()
         self.assertEqual(len(dbhelper.username), 0)
