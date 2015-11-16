@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
+from baglerDbHelper import DbHelper, People
 
 
 app = Flask(__name__)
@@ -31,10 +32,14 @@ def actions(name = None):
     Returns: Web page of actions or redirects to score board.
     """
     if name in validNames:
-        # Load data
+
         if request.method == 'POST':
             action = request.form['submit']
-            print(action)
+
+
+
+
+
             return redirect(url_for('scoreBoard', action=action, name=name))
         else:
             return render_template("actions.html")
@@ -51,13 +56,52 @@ def scoreBoard(action = None, name = None):
         name: Name of person
     Returns: Web page of score board.
     """
-    print(action in validActions)
+    # Load data
+    dbhelper = DbHelper()
+    dbhelper.loadCredentials()
+    people = []
+    people = dbhelper.loadData()
+
     if action in validActions and name in validNames:
-        return render_template("scoreboard.html")
+        # Load data
+        dbhelper = DbHelper()
+        dbhelper.loadCredentials()
+        people = []
+        people = dbhelper.loadData()
+
+        nameNotInDb = False
+        indexPerson = 0
+
+        for person in people:
+            if name == person.name:
+                nameNotInDb = True
+                break
+            indexPerson += 1
+
+        if not nameNotInDb:
+            people.append(People(len(people)-1, name, 1))
+        else:
+            people[indexPerson].score += 1
+        dbhelper.saveData(people)
+
+        return renderScoreBoard(people)
+
     elif action is None and name is None:
-        return render_template("scoreboard.html") 
+        return renderScoreBoard(people)
     else:
         return "Wrong url"
+
+def renderScoreBoard(people):
+    while(len(people) < len(validNames)):
+        people.append(People(len(people)-1, None, None))
+
+    return render_template("scoreboard.html",
+           name1 = people[0].name, score1 = people[0].score,
+           name2 = people[1].name, score2 = people[1].score,
+           name3 = people[2].name, score3 = people[2].score,
+           name4 = people[3].name, score4 = people[3].score,
+           name5 = people[4].name, score5 = people[4].score)
+
 
 
 
