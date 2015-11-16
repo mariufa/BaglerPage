@@ -83,6 +83,10 @@ class DbHelper:
         con.close()
 
     def resetData(self):
+        """
+        Deletes data in table
+
+        """
         self.saveData([])
 
 
