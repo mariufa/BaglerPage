@@ -23,22 +23,28 @@ class DatabaseTestCase(unittest.TestCase):
         """
         Test to check loading and saving of data
         """
-        peoples = []
-        peoples.append(People(0, "Marius", 0))
-        self.dbhelper.saveData(peoples)
-        peoplesLoaded = self.dbhelper.loadData()
-        self.assertEqual(len(peoplesLoaded), 1)
-        people = peoplesLoaded[0]
-        self.assertEqual(people.idTag,0)
-        self.assertEqual(people.name, "Marius")
-        self.assertEqual(people.score, 0)
+        people = []
+        people.append(People(0, "Marius", 0))
+        self.dbhelper.saveData(people)
+        peopleLoaded = self.dbhelper.loadData()
+        self.assertEqual(len(peopleLoaded), 1)
+        person = peopleLoaded[0]
+        self.assertEqual(person.idTag,0)
+        self.assertEqual(person.name, "Marius")
+        self.assertEqual(person.score, 0)
 
 
     def test_resetData(self):
         """
         Test to check if data table being emptied.
         """
-        pass
+        people = []
+        people.append(People(0, "Marius", 0))
+        people.append(People(1, "Marius2", 10))
+        self.dbhelper.saveData(people)
+        self.dbhelper.resetData()
+        peopleLoaded = self.dbhelper.loadData()
+        self.assertEqual(len(peopleLoaded), 0)
 
     def test_test(self):
         """
