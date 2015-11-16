@@ -40,7 +40,10 @@ class DatabaseTestCase(unittest.TestCase):
         dbhelper.saveData(peoples)
         peoplesLoaded = dbhelper.loadData()
         self.assertEqual(len(peoplesLoaded), 1)
-        people = peoples[0]
+        people = peoplesLoaded[0]
+        self.assertEqual(people.idTag,0)
+        self.assertEqual(people.name, "Marius")
+        self.assertEqual(people.score, 0)
 
 
     def test_resetData(self):
