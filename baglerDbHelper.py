@@ -1,6 +1,6 @@
 
 import psycopg2
-import sys
+import sys, os
 
 
 class DbHelper:
@@ -15,7 +15,8 @@ class DbHelper:
         """
         Loads settings from file.
         """
-        fileCred = open(self.fileName, "r")
+        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        fileCred = open(os.path.join(location,self.fileName), "r")
         for line in fileCred:
             line = line.strip().split(":")
             if line[0] == "user":
