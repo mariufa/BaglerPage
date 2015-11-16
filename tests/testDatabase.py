@@ -36,9 +36,11 @@ class DatabaseTestCase(unittest.TestCase):
         dbhelper = DbHelper()
         dbhelper.loadCredentials()
         peoples = []
-        peoples.append(People())
+        peoples.append(People(0, "Marius", 0))
+        dbhelper.saveData(peoples)
+        peoplesLoaded = dbhelper.loadData()
+        self.assertEqual(len(peoplesLoaded), 1)
 
-        pass
 
     def test_resetData(self):
         """

@@ -50,7 +50,7 @@ class DbHelper:
         data = []
         rows = cur.fetchall()
         for row in rows:
-            data.append(People(row[0]), row[1], row[2])
+            data.append(People(row[0], row[1], row[2]))
 
         con.close()
         return data
@@ -75,15 +75,15 @@ class DbHelper:
                 + "(Id INTEGER PRIMARY KEY, Name TEXT, Score INT)")
 
         for person in data:
-            cur.execute("INSERT INTO " + self.tableName 
-                    + " (Id, Name, Score) VALUES (%s, %s, %s)" 
-                    % (person.idTag, person.name, person.score))
+            query ="INSERT INTO " + self.tableName + " (Id, Name, Score) VALUES (%s, %s, %s)"
+            cur.execute(query, (person.idTag, person.name, person.score))
+
         con.commit()
 
         con.close()
 
     def resetData(self):
-        self.saveData(None)
+        self.saveData([])
 
 
 
