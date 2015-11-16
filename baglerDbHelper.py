@@ -90,6 +90,17 @@ class DbHelper:
 class People:
 
     def __init__(self, idTag = 0, name = None, score = 0):
+        """
+        Constructor
+
+        Args:
+            idTag: Int number.
+            name: Text string
+            score: Int number
+
+        Returns:
+
+        """
         self.name = name
         self.score = score
         self.idTag = idTag
