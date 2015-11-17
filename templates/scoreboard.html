@@ -20,36 +20,12 @@
       </tr>
     </thead>
     <tbody>
-      {% if name1 and score1 %}
+      {% for person in people %}
       <tr>
-          <td>{{name1}}</td>
-          <td>{{score1}}</td>
+          <td>{{person.name}}</td>
+          <td>{{person.score}}</td>
       </tr>
-      {% endif %}
-      {% if name2 and score2 %}
-      <tr>
-          <td>{{name2}}</td>
-          <td>{{score2}}</td>
-      </tr>
-      {% endif %}
-      {% if name3 and score3 %}
-      <tr>
-          <td>{{name3}}</td>
-          <td>{{score3}}</td>
-      </tr>
-      {% endif %}
-      {% if name4 and score4 %}
-      <tr>
-          <td>{{name4}}</td>
-          <td>{{score4}}</td>
-      </tr>
-      {% endif %}
-      {% if name5 and score5 %}
-      <tr>
-          <td>{{name5}}</td>
-          <td>{{score5}}</td>
-      </tr>
-      {% endif %}
+      {% endfor %}
     </tbody>
   </table>
 </div>
