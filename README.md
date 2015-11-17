@@ -9,6 +9,10 @@
 ``` 
 $ sudo apt-get install postgreql
 ```
+- Python package for postgresql
+``` 
+$ sudo apt-get install python-psycopg2
+```
 - Optional remove startup scripts for postgresql:
 ``` 
 $ sudo update-rc.d -f postgresql remove
