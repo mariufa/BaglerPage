@@ -1,5 +1,5 @@
 # BaglerPage
-- First a credentials.txt is required in the project root, and should look like:
+- First a credentials.txt is required in the project root. This should contain the necessary information for postgresql. The file should look like like:
 ``` 
  user:username
  db:databasName
