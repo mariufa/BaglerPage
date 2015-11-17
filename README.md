@@ -1,4 +1,6 @@
 # BaglerPage
+Web app to keep track of housekeeping.
+## Requirements
 - First a credentials.txt is required in the project root. This should contain the necessary information for postgresql. The file should look like like:
 ``` 
  user:username
