@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
-from baglerDbHelper import DbHelper, People
+from baglerDbHelper import DbHelper, Person
 
 
 app = Flask(__name__)
@@ -66,7 +66,7 @@ def scoreBoard(action = None, name = None):
             indexPerson += 1
 
         if not nameNotInDb:
-            people.append(People(len(people)-1, name, 1))
+            people.append(Person(len(people) - 1, name, 1))
         else:
             people[indexPerson].score += 1
         writeToDatabase(people)

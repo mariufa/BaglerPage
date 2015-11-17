@@ -50,7 +50,7 @@ class DbHelper:
         data = []
         rows = cur.fetchall()
         for row in rows:
-            data.append(People(row[0], row[1], row[2]))
+            data.append(Person(row[0], row[1], row[2]))
 
         con.close()
         return data
@@ -61,9 +61,6 @@ class DbHelper:
 
         Args:
             data: List of Person objects to be stored in table.
-
-        Returns:
-            Nothing.
         """
         con = None
         con = psycopg2.connect(database = self.databaseName , user = self.username)
@@ -85,13 +82,12 @@ class DbHelper:
     def resetData(self):
         """
         Deletes data in table
-
         """
         self.saveData([])
 
 
 
-class People:
+class Person:
 
     def __init__(self, idTag = 0, name = None, score = 0):
         """
@@ -101,9 +97,6 @@ class People:
             idTag: Int number.
             name: Text string
             score: Int number
-
-        Returns:
-
         """
         self.name = name
         self.score = score
