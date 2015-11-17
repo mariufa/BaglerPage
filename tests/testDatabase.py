@@ -2,7 +2,7 @@ import sys, os
 # Enable import of classes from parent folder
 sys.path.append('..')
 import unittest
-from baglerDbHelper import DbHelper, People
+from baglerDbHelper import DbHelper, Person
 
 class DatabaseTestCase(unittest.TestCase):
 
@@ -24,7 +24,7 @@ class DatabaseTestCase(unittest.TestCase):
         Test to check loading and saving of data
         """
         people = []
-        people.append(People(0, "Marius", 0))
+        people.append(Person(0, "Marius", 0))
         self.dbhelper.saveData(people)
         peopleLoaded = self.dbhelper.loadData()
         self.assertEqual(len(peopleLoaded), 1)
@@ -39,8 +39,8 @@ class DatabaseTestCase(unittest.TestCase):
         Test to check if data table being emptied.
         """
         people = []
-        people.append(People(0, "Marius", 0))
-        people.append(People(1, "Marius2", 10))
+        people.append(Person(0, "Marius", 0))
+        people.append(Person(1, "Marius2", 10))
         self.dbhelper.saveData(people)
         self.dbhelper.resetData()
         peopleLoaded = self.dbhelper.loadData()

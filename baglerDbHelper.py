@@ -4,6 +4,9 @@ import sys, os
 
 
 class DbHelper:
+    """
+    3 functions to use are loadCredentials, loadData and saveData.
+    """
 
     def __init__(self):
         self.databaseName = ''
@@ -18,6 +21,7 @@ class DbHelper:
         location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         fileCred = open(os.path.join(location,self.fileName), "r")
         for line in fileCred:
+            # Remove spaces, new lines and split in two where ':'.
             line = line.strip().split(":")
             if line[0] == "user":
                 self.username = line[1]
@@ -41,18 +45,27 @@ class DbHelper:
         cur = con.cursor()
 
         # In case table does not exists already
-        cur.execute("CREATE TABLE IF NOT EXISTS " 
-                + self.tableName 
-                + "(Id INT PRIMARY KEY, Name TEXT, Score INT)")
+        self.setupTable(cur)
+        # Save changes
         con.commit()
 
+        # Read from table.
         cur.execute("SELECT * FROM " + self.tableName)
-        data = []
-        rows = cur.fetchall()
-        for row in rows:
-            data.append(People(row[0], row[1], row[2]))
 
+        # Get all rows from database table.
+        rows = cur.fetchall()
+        data = self.tranformFromTableToList(rows)# Close connection
+        print(data)
+
+        # Close connection.
         con.close()
+        return data
+
+    def tranformFromTableToList(self, rows):
+        data = []
+        for row in rows:
+            data.append(Person(row[0], row[1], row[2]))
+
         return data
 
     def saveData(self, data):
@@ -61,49 +74,78 @@ class DbHelper:
 
         Args:
             data: List of Person objects to be stored in table.
-
-        Returns:
-            Nothing.
         """
         con = None
         con = psycopg2.connect(database = self.databaseName , user = self.username)
         cur = con.cursor()
 
-        cur.execute("DROP TABLE IF EXISTS " + self.tableName)
-        cur.execute("CREATE TABLE " 
-                + self.tableName 
-                + "(Id INTEGER PRIMARY KEY, Name TEXT, Score INT)")
+        self.resetTable(cur)
+        self.insertIntoTable(cur, data)
+        # Save changes
+        con.commit()
+        # Close connection
+        con.close()
 
+    def insertIntoTable(self, cur, data):
+        """
+        Inserts data into database table.
+
+        Args:
+            cur: Cursor in table
+            data: List of persons.
+        """
         for person in data:
-            query ="INSERT INTO " + self.tableName + " (Id, Name, Score) VALUES (%s, %s, %s)"
+            query = "INSERT INTO " + self.tableName + " (Id, Name, Score) VALUES (%s, %s, %s)"
             cur.execute(query, (person.idTag, person.name, person.score))
 
-        con.commit()
+    def resetTable(self, cur):
+        """
+        Deletes table and recreates it.
 
-        con.close()
+        Args:
+            cur: Cursor of table
+        """
+        self.deleteTable(cur)
+        self.setupTable(cur)
+
+    def deleteTable(self, cur):
+        """
+        Deletes table.
+
+        Args:
+            cur: Cursor of table
+        """
+        cur.execute("DROP TABLE IF EXISTS " + self.tableName)
+
+    def setupTable(self, cur):
+        """
+        Creates table.
+
+        Args:
+            cur: Cursor of table
+        """
+        cur.execute("CREATE TABLE IF NOT EXISTS "
+                    + self.tableName
+                    + "(Id INTEGER PRIMARY KEY, Name TEXT, Score INT)")
 
     def resetData(self):
         """
         Deletes data in table
-
         """
         self.saveData([])
 
 
 
-class People:
+class Person:
 
     def __init__(self, idTag = 0, name = None, score = 0):
         """
-        Constructor
+        Constructor.
 
         Args:
             idTag: Int number.
             name: Text string
             score: Int number
-
-        Returns:
-
         """
         self.name = name
         self.score = score

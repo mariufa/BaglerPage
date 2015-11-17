@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
-from baglerDbHelper import DbHelper, People
+from baglerDbHelper import DbHelper, Person
 
 
 app = Flask(__name__)
@@ -12,8 +12,9 @@ validActions = ["Oppvask inn", "Oppvask ut", u"Søppel", u"Tørk overflater"]
 def namesIndex():
     """
     Function to handle page with names of the people.
-    Args:
-    Return: Either redirects to new page or show current name page.
+
+    Return:
+        Either redirects to new page or show current name page.
     """
     if request.method == 'POST':
         name = request.form['submit']
@@ -29,7 +30,8 @@ def actions(name = None):
     Page to show what actions one can do.
     Args: 
         name: Name of person to do action.
-    Returns: Web page of actions or redirects to score board.
+    Returns:
+        Web page of actions or redirects to score board.
     """
     if name in validNames:
         if request.method == 'POST':
@@ -45,10 +47,12 @@ def actions(name = None):
 def scoreBoard(action = None, name = None):
     """
     Shows update scoreboard.
+
     Args: 
         action: Action done by person
         name: Name of person
-    Returns: Web page of score board.
+    Returns:
+        Web page of score board.
     """
     people = []
     people = loadPeopleFromDataBase()
@@ -66,7 +70,7 @@ def scoreBoard(action = None, name = None):
             indexPerson += 1
 
         if not nameNotInDb:
-            people.append(People(len(people)-1, name, 1))
+            people.append(Person(len(people) - 1, name, 1))
         else:
             people[indexPerson].score += 1
         writeToDatabase(people)
