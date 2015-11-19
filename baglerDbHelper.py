@@ -55,7 +55,6 @@ class DbHelper:
         # Get all rows from database table.
         rows = cur.fetchall()
         data = self.tranformFromTableToList(rows)# Close connection
-        print(data)
 
         # Close connection.
         con.close()
