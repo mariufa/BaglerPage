@@ -27,7 +27,7 @@ class DbHelper:
             A list of Person objects.
         """
         con = None
-        con = psycopg2.connect(database = self.credentials.databaseName, user = self.credentials.username)
+        con = psycopg2.connect(database = self.getDatabaseName(), user = self.getUsername())
         cur = con.cursor()
 
         # In case table does not exists already
@@ -36,7 +36,7 @@ class DbHelper:
         con.commit()
 
         # Read from table.
-        cur.execute("SELECT * FROM " + self.credentials.tableName)
+        cur.execute("SELECT * FROM " + self.getTableName())
 
         # Get all rows from database table.
         rows = cur.fetchall()
@@ -61,7 +61,7 @@ class DbHelper:
             data: List of Person objects to be stored in table.
         """
         con = None
-        con = psycopg2.connect(database = self.credentials.databaseName , user = self.credentials.username)
+        con = psycopg2.connect(database = self.getDatabaseName() , user = self.getUsername())
         cur = con.cursor()
 
         self.resetTable(cur)
@@ -80,7 +80,7 @@ class DbHelper:
             data: List of persons.
         """
         for person in data:
-            query = "INSERT INTO " + self.credentials.tableName + " (Id, Name, Score) VALUES (%s, %s, %s)"
+            query = "INSERT INTO " + self.getTableName() + " (Id, Name, Score) VALUES (%s, %s, %s)"
             cur.execute(query, (person.idTag, person.name, person.score))
 
     def resetTable(self, cur):
@@ -100,7 +100,7 @@ class DbHelper:
         Args:
             cur: Cursor of table
         """
-        cur.execute("DROP TABLE IF EXISTS " + self.credentials.tableName)
+        cur.execute("DROP TABLE IF EXISTS " + self.getTableName())
 
     def setupTable(self, cur):
         """
@@ -110,7 +110,7 @@ class DbHelper:
             cur: Cursor of table
         """
         cur.execute("CREATE TABLE IF NOT EXISTS "
-                    + self.credentials.tableName
+                    + self.getTableName()
                     + "(Id INTEGER PRIMARY KEY, Name TEXT, Score INT)")
 
     def getTableName(self):
