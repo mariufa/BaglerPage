@@ -159,16 +159,26 @@ class Credentials:
         """
         location = self.getFilePathOfScript()
         fileCred = open(os.path.join(location,self.fileName), "r")
-        for line in fileCred:
-            # Remove spaces, new lines and split in two where ':'.
-            line = line.strip().split(":")
-            if line[0] == "user":
-                self.username = line[1]
-            elif line[0] == "db":
-                self.databaseName = line[1]
-            elif line[0] == "table":
-                self.tableName = line[1]
+        self.readFileAndGetCredentials(fileCred)
         fileCred.close()
+
+    def readFileAndGetCredentials(self, fileCred):
+        for line in fileCred:
+            self.checkLineAndSetCredential(line)
+
+    def checkLineAndSetCredential(self, line):
+        # Remove spaces, new lines and split in two where ':'.
+        line = line.strip().split(":")
+        self.setCredentials(line)
+
+    def setCredentials(self, line):
+        indexCredential = 0
+        if line[indexCredential] == "user":
+            self.username = line[1]
+        elif line[indexCredential] == "db":
+            self.databaseName = line[1]
+        elif line[indexCredential] == "table":
+            self.tableName = line[1]
 
     def getFilePathOfScript(self):
         """
