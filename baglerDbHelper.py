@@ -162,6 +162,15 @@ class Credentials:
         self.readFileAndGetCredentials(fileCred)
         fileCred.close()
 
+    def getFilePathOfScript(self):
+        """
+        Used to make sure of location of credentials.txt.
+
+        Returns:
+            File location. String.
+        """
+        return os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
     def readFileAndGetCredentials(self, fileCred):
         for line in fileCred:
             self.checkLineAndSetCredential(line)
@@ -180,11 +189,3 @@ class Credentials:
         elif line[indexCredential] == "table":
             self.tableName = line[1]
 
-    def getFilePathOfScript(self):
-        """
-        Used to make sure of location of credentials.txt.
-
-        Returns:
-            File location. String.
-        """
-        return os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
