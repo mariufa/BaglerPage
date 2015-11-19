@@ -8,6 +8,7 @@ app = Flask(__name__)
 validNames = ["Marius", "Olaug", "Finn", "Sofie", "Ole Kristian"]
 validActions = ["Oppvask inn", "Oppvask ut", u"Søppel", u"Tørk overflater"]
 
+
 @app.route('/', methods=['GET', 'POST'])
 def namesIndex():
     """
@@ -57,28 +58,26 @@ def scoreBoard(action = None, name = None):
     people = []
     people = loadPeopleFromDataBase()
 
-    if nameAndActionChosen(action, name):
-        # name may not be stored in database
-        nameNotInDb = False
-        indexPerson = 0
+    if nameAndActionChosen(action, name) or scoreboardButtonPushed(action, name):
+        if nameAndActionChosen(action, name):
+            # name may not be stored in database
+            nameNotInDb = False
+            indexPerson = 0
+            # Search for name in database
+            for person in people:
+                if name == person.name:
+                    nameNotInDb = True
+                    break
+                indexPerson += 1
 
-        # Search for name in database
-        for person in people:
-            if name == person.name:
-                nameNotInDb = True
-                break
-            indexPerson += 1
-
-        if not nameNotInDb:
-            people.append(Person(len(people) - 1, name, 1))
-        else:
-            people[indexPerson].score += 1
-        writeToDatabase(people)
+            if not nameNotInDb:
+                people.append(Person(len(people) - 1, name, 1))
+            else:
+                people[indexPerson].score += 1
+            writeToDatabase(people)
 
         return render_template("scoreboard.html", people=people)
 
-    elif scoreboardButtonPushed(action, name):
-        return render_template("scoreboard.html", people=people)
     else:
         return "Wrong url"
 
