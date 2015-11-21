@@ -18,12 +18,18 @@ def namesIndex():
         Either redirects to new page or show current name page.
     """
     if request.method == 'POST':
-        name = request.form['submit']
-        if name == 'Score board': # Check if score button was pushed
-            return redirect(url_for("scoreBoard"))
-        return redirect(url_for('actions', name=name))
+        return pushedAButton()
     elif request.method == 'GET':
         return render_template("names.html")
+
+
+def pushedAButton():
+    name = request.form['submit']
+    if name == 'Score board':
+        return redirect(url_for("scoreBoard"))
+    else:
+        return redirect(url_for('actions', name=name))
+
 
 @app.route('/<name>', methods=['GET', 'POST'])
 def actions(name = None):
@@ -35,13 +41,18 @@ def actions(name = None):
         Web page of actions or redirects to score board.
     """
     if name in validNames:
-        if request.method == 'POST':
-            action = request.form['submit']
-            return redirect(url_for('scoreBoard', action=action, name=name))
-        else:
-            return render_template("actions.html")
+        return validUrl(name)
     else:
         return "Wrong name"
+
+
+def validUrl(name):
+    if request.method == 'POST':
+        action = request.form['submit']
+        return redirect(url_for('scoreBoard', action=action, name=name))
+    else:
+        return render_template("actions.html")
+
 
 @app.route('/score') #Show score without having to do an action.
 @app.route('/<name>/<action>', methods=['GET', 'POST'])
@@ -55,31 +66,37 @@ def scoreBoard(action = None, name = None):
     Returns:
         Web page of score board.
     """
-    people = []
-    people = loadPeopleFromDataBase()
-
     if nameAndActionChosen(action, name) or scoreboardButtonPushed(action, name):
-        if nameAndActionChosen(action, name):
-            # name may not be stored in database
-            nameNotInDb = False
-            indexPerson = 0
-            # Search for name in database
-            for person in people:
-                if name == person.name:
-                    nameNotInDb = True
-                    break
-                indexPerson += 1
-
-            if not nameNotInDb:
-                people.append(Person(len(people) - 1, name, 1))
-            else:
-                people[indexPerson].score += 1
-            writeToDatabase(people)
-
-        return render_template("scoreboard.html", people=people)
-
+        return validScoreBoardUrl(action, name)
     else:
         return "Wrong url"
+
+
+def validScoreBoardUrl(action, name):
+    people = []
+    people = loadPeopleFromDataBase()
+    if nameAndActionChosen(action, name):
+        people = updatePeopleAndDatabase(name, people)
+    return render_template("scoreboard.html", people=people)
+
+
+def updatePeopleAndDatabase(name, people):
+    # name may not be stored in database
+    nameNotInDb = False
+    indexPerson = 0
+    # Search for name in database
+    for person in people:
+        if name == person.name:
+            nameNotInDb = True
+            break
+        indexPerson += 1
+    if not nameNotInDb:
+        people.append(Person(len(people) - 1, name, 1))
+    else:
+        people[indexPerson].score += 1
+    writeToDatabase(people)
+    return people
+
 
 def loadPeopleFromDataBase():
     """
