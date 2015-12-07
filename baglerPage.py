@@ -82,15 +82,15 @@ def validScoreBoardUrl(action, name):
 
 def updatePeopleAndDatabase(name, people):
     # name may not be stored in database
-    nameNotInDb = False
+    nameInDb = False
     indexPerson = 0
     # Search for name in database
     for person in people:
         if name == person.name:
-            nameNotInDb = True
+            nameInDb = True
             break
         indexPerson += 1
-    if not nameNotInDb:
+    if not nameInDb:
         people.append(Person(len(people) - 1, name, 1))
     else:
         people[indexPerson].score += 1
