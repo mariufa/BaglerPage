@@ -97,6 +97,14 @@ def updatePeopleAndDatabase(name, people):
     writeToDatabase(people)
     return people
 
+def findPerson(people):
+    personIndex = -1
+    for i in range(len(people)):
+        if name == people[i].name:
+            personIndex = i
+            break
+    return personIndex
+
 
 def loadPeopleFromDataBase():
     """
