@@ -9,27 +9,13 @@ class DbHelper:
     """
 
     def __init__(self):
-        self.databaseName = ''
-        self.username = ''
-        self.tableName = ''
-        self.fileName = "credentials.txt"
+        self.credentials = Credentials()
 
     def loadCredentials(self):
         """
         Loads settings from file.
         """
-        location = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        fileCred = open(os.path.join(location,self.fileName), "r")
-        for line in fileCred:
-            # Remove spaces, new lines and split in two where ':'.
-            line = line.strip().split(":")
-            if line[0] == "user":
-                self.username = line[1]
-            elif line[0] == "db":
-                self.databaseName = line[1]
-            elif line[0] == "table":
-                self.tableName = line[1]
-        fileCred.close()
+        self.credentials.loadCredentials()
         
     def loadData(self):
         """
@@ -41,7 +27,7 @@ class DbHelper:
             A list of Person objects.
         """
         con = None
-        con = psycopg2.connect(database = self.databaseName, user = self.username)
+        con = psycopg2.connect(database = self.getDatabaseName(), user = self.getUsername())
         cur = con.cursor()
 
         # In case table does not exists already
@@ -50,12 +36,11 @@ class DbHelper:
         con.commit()
 
         # Read from table.
-        cur.execute("SELECT * FROM " + self.tableName)
+        cur.execute("SELECT * FROM " + self.getTableName())
 
         # Get all rows from database table.
         rows = cur.fetchall()
         data = self.tranformFromTableToList(rows)# Close connection
-        print(data)
 
         # Close connection.
         con.close()
@@ -76,7 +61,7 @@ class DbHelper:
             data: List of Person objects to be stored in table.
         """
         con = None
-        con = psycopg2.connect(database = self.databaseName , user = self.username)
+        con = psycopg2.connect(database = self.getDatabaseName() , user = self.getUsername())
         cur = con.cursor()
 
         self.resetTable(cur)
@@ -95,7 +80,7 @@ class DbHelper:
             data: List of persons.
         """
         for person in data:
-            query = "INSERT INTO " + self.tableName + " (Id, Name, Score) VALUES (%s, %s, %s)"
+            query = "INSERT INTO " + self.getTableName() + " (Id, Name, Score) VALUES (%s, %s, %s)"
             cur.execute(query, (person.idTag, person.name, person.score))
 
     def resetTable(self, cur):
@@ -115,7 +100,7 @@ class DbHelper:
         Args:
             cur: Cursor of table
         """
-        cur.execute("DROP TABLE IF EXISTS " + self.tableName)
+        cur.execute("DROP TABLE IF EXISTS " + self.getTableName())
 
     def setupTable(self, cur):
         """
@@ -125,8 +110,17 @@ class DbHelper:
             cur: Cursor of table
         """
         cur.execute("CREATE TABLE IF NOT EXISTS "
-                    + self.tableName
+                    + self.getTableName()
                     + "(Id INTEGER PRIMARY KEY, Name TEXT, Score INT)")
+
+    def getTableName(self):
+        return self.credentials.tableName
+
+    def getDatabaseName(self):
+        return self.credentials.databaseName
+
+    def getUsername(self):
+        return self.credentials.username
 
     def resetData(self):
         """
@@ -151,4 +145,47 @@ class Person:
         self.score = score
         self.idTag = idTag
 
+class Credentials:
+
+    def __init__(self):
+        self.databaseName = ''
+        self.username = ''
+        self.tableName = ''
+        self.fileName = "credentials.txt"
+
+    def loadCredentials(self):
+        """
+        Loads names from file.
+        """
+        location = self.getFilePathOfScript()
+        fileCred = open(os.path.join(location,self.fileName), "r")
+        self.readFileAndGetCredentials(fileCred)
+        fileCred.close()
+
+    def getFilePathOfScript(self):
+        """
+        Used to make sure of location of credentials.txt.
+
+        Returns:
+            File location. String.
+        """
+        return os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+    def readFileAndGetCredentials(self, fileCred):
+        for line in fileCred:
+            self.checkLineAndSetCredential(line)
+
+    def checkLineAndSetCredential(self, line):
+        # Remove spaces, new lines and split in two where ':'.
+        line = line.strip().split(":")
+        self.setCredentials(line)
+
+    def setCredentials(self, line):
+        indexCredential = 0
+        if line[indexCredential] == "user":
+            self.username = line[1]
+        elif line[indexCredential] == "db":
+            self.databaseName = line[1]
+        elif line[indexCredential] == "table":
+            self.tableName = line[1]
 
