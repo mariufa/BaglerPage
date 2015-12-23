@@ -76,26 +76,28 @@ def validScoreBoardUrl(action, name):
     people = []
     people = loadPeopleFromDataBase()
     if nameAndActionChosen(action, name):
-        people = updatePeopleAndDatabase(name, people)
+        people = updatePeople(name, people)
+        writeToDatabase(people)
     return render_template("scoreboard.html", people=people)
 
 
-def updatePeopleAndDatabase(name, people):
-    # name may not be stored in database
-    nameInDb = False
-    indexPerson = 0
-    # Search for name in database
-    for person in people:
-        if name == person.name:
-            nameInDb = True
-            break
-        indexPerson += 1
-    if not nameInDb:
-        people.append(Person(len(people) - 1, name, 1))
-    else:
+def updatePeople(name, people):
+    indexPerson = findPerson(name, people)
+    if indexPerson >= 0:
         people[indexPerson].score += 1
-    writeToDatabase(people)
+    else:
+        score = 1
+        idTag = len(people) -1
+        people.append(Person(idTag, name, score))
     return people
+
+def findPerson(name, people):
+    indexPerson = -1
+    for i in range(len(people)):
+        if name == people[i].name:
+            indexPerson = i
+            break
+    return indexPerson
 
 
 def loadPeopleFromDataBase():
