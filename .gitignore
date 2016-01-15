@@ -1,5 +1,9 @@
 credentials.txt
 
+# Server setup
+bagler-server.ini
+wsgi.py
+
 # Created by https://www.gitignore.io/api/pycharm,python,vim
 
 ### PyCharm ###

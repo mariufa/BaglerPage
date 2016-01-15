@@ -3,13 +3,13 @@ from flask import Flask, render_template, request, redirect, url_for
 from baglerDbHelper import DbHelper, Person
 
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 validNames = ["Marius", "Olaug", "Finn", "Sofie", "Ole Kristian"]
 validActions = ["Oppvask inn", "Oppvask ut", u"Søppel", u"Tørk overflater"]
 
 
-@app.route('/', methods=['GET', 'POST'])
+@application.route('/', methods=['GET', 'POST'])
 def namesIndex():
     """
     Function to handle page with names of the people.
@@ -31,7 +31,7 @@ def pushedAButton():
         return redirect(url_for('actions', name=name))
 
 
-@app.route('/<name>', methods=['GET', 'POST'])
+@application.route('/<name>', methods=['GET', 'POST'])
 def actions(name = None):
     """
     Page to show what actions one can do.
@@ -54,8 +54,8 @@ def validUrl(name):
         return render_template("actions.html")
 
 
-@app.route('/score') #Show score without having to do an action.
-@app.route('/<name>/<action>', methods=['GET', 'POST'])
+@application.route('/score') #Show score without having to do an action.
+@application.route('/<name>/<action>', methods=['GET', 'POST'])
 def scoreBoard(action = None, name = None):
     """
     Shows update scoreboard.
@@ -150,5 +150,5 @@ def scoreboardButtonPushed(action, name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
-    #app.run(host='0.0.0.0')
+    #application.run(debug=True)
+    application.run(host='0.0.0.0')
